@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>document</title>
+</head>
+
+<body>
+    <div id="main"></div>
+    <style>
+        body,
+        #main {
+            height: 500px;
+            width: 100%;
+        }
+    </style>
+    <script>
+        let clicks = [];
+
+        let label = document.createElement("label");
+        label.innerText = "";
+        document.getElementById("main").appendChild(label);
+        document.getElementById("main").addEventListener("mousemove", (e) => {
+            let pos = `(${e.clientX}, ${e.clientY})`;
+            label.innerText = pos;
+            label.style.position = "absolute";
+            label.style.top = e.clientY + "px";
+            label.style.left = e.clientX + 10 + "px";
+        });
+
+        document.getElementById("main").addEventListener("mouseup", (e) => {
+            e.preventDefault();
+            if (!(e.target && e.target.id == "main")) return;   //Clicking any button does not print the Hello again.
+            let div = document.createElement("div");
+            let main = Date.now();
+            console.log(div);
+            div.setAttribute("id", `div${main}`);
+            div.style.position = "absolute";
+            div.style.top = e.clientY + "px";
+            div.style.left = e.clientX + "px";
+
+            document.getElementById("main").appendChild(div);
+            let hello = document.createElement("label");
+            hello.innerText = `Hello`;
+            hello.setAttribute("id", `label${main}`);
+            document.getElementById(`div${main}`).appendChild(hello);
+
+            //create edit button
+            let edit = document.createElement("button");
+            edit.style.backgroundColor = "#ffe44d";
+            edit.style.postion = "absolute";
+            edit.style.top = e.clientY +  20 + "px";
+            edit.style.left = e.clientX + 20 + "px";
+            edit.setAttribute("id", `edit${main}`);
+            edit.setAttribute(
+                "onclick",
+                `editFun(${main},label${main},edit${main},close${main},save${main},cancel${main},input${main})`
+            );
+            edit.innerHTML = "Edit";
+            document.getElementById(`div${main}`).appendChild(edit);
+
+            //creating close btn
+            let close = document.createElement("button");
+            close.innerHTML = "Close";
+            close.style.backgroundColor = "#ffe44d";
+            close.style.postion = "absolute";
+            close.style.top = e.clientY + 20 + "px";
+            close.style.left = e.clientX + 20 + "px";
+            close.setAttribute("id", `close${main}`);
+            close.innerText = `Close`;
+
+            close.setAttribute("onclick", `closeFun(div${main})`);
+            document.getElementById(`div${main}`).appendChild(close);
+
+            //creating save btn
+            let save = document.createElement("button");
+            save.innerHTML = "Save";
+            save.style.backgroundColor = "#ffe44d";
+            save.setAttribute("id", `save${main}`);
+            document.getElementById(`div${main}`).appendChild(save);
+            save.style.display = "none";
+
+            //creating cancel tbn
+            let cancel = document.createElement("button");
+            cancel.innerHTML = "Cancel";
+            cancel.style.backgroundColor = "#ffe44d";
+            cancel.setAttribute("id", `cancel${main}`);
+            cancelId = `cancel${main}`;
+            document.getElementById(`div${main}`).appendChild(cancel);
+            cancel.style.display = "none";
+
+            let input = document.createElement("input");
+            input.setAttribute("type", "text");
+            input.setAttribute("id", `input${main}`);
+            document.getElementById(`div${main}`).appendChild(input);
+            input.style.display = "none";
+
+            clicks.push({
+                text: "hello",
+                x: e.clientX,
+                y: e.clientY,
+                id: `div${main}`,
+            });
+
+            console.log(clicks);
+        });
+
+        function editFun(id, labelEle, editEle, closeEle, saveEle, cancelEle, input) {
+            editEle.style.display = "none";
+            labelEle.style.display = "none";
+            cancelEle.style.display = "block";
+            saveEle.style.display = "block";
+            input.style.display = "block";
+            let value = labelEle.innerText;
+            input.value = value;
+            saveEle.setAttribute("onclick", `saveFun(${id})`);
+            cancelEle.setAttribute("onclick", `cancel(${id})`);
+        }
+
+        function saveFun(id) {
+            console.log(id);
+            let input = document.getElementById(`input${id}`);
+            let label = document.getElementById(`label${id}`);
+            let edit = document.getElementById(`edit${id}`);
+            let cancel = document.getElementById(`cancel${id}`);
+            let save = document.getElementById(`save${id}`);
+            label.innerText = input.value;
+            edit.style.display = "block";
+            label.style.display = "block";
+            save.style.display = "none";
+            cancel.style.display = "none";
+            input.style.display = "none";
+        }
+
+        function cancel(id) {
+            let input = document.getElementById(`input${id}`);
+            let label = document.getElementById(`label${id}`);
+            let edit = document.getElementById(`edit${id}`);
+            let cancel = document.getElementById(`cancel${id}`);
+            let save = document.getElementById(`save${id}`);
+            save.style.display = "none";
+            cancel.style.display = "none";
+            input.style.display = "none";
+            input.value = "";
+            edit.style.display = "block";
+            label.style.display = "block";
+        }
+
+        function closeFun(Id) {
+            var c = Id;
+            let index = clicks.findIndex(({ id }) => c === id);
+            clicks.splice(index, 1);
+            Id.remove();
+            console.log(clicks);
+        }
+    </script>
+</body>
+
+</html>
